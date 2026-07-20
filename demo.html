@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Student Assistance - Demo</title>
+  
+  <!-- CDN Dependency packages -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Sibling Stylesheet link -->
+  <link rel="stylesheet" href="style.css?v=2">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          borderRadius: {
+            'custom': '14px',
+          },
+          boxShadow: {
+            'premium': '0 8px 30px rgba(0, 0, 0, 0.02)',
+            'card': '0 1px 3px rgba(0, 0, 0, 0.01), 0 1px 2px rgba(0, 0, 0, 0.02)',
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-slate-50 antialiased overflow-x-hidden min-h-screen text-slate-800">
+
+  <!-- ==================== USER LOGIN INTERFACE ==================== -->
+  <div id="loginPage" class="min-h-screen flex flex-col items-center justify-center p-6 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-50/50 via-white to-slate-100">
+    <div class="w-full max-w-sm bg-white rounded-[20px] border border-slate-200 p-8 shadow-premium text-center">
+      <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-blue-600/10 text-blue-600 mb-5">
+        <i data-lucide="graduation-cap" class="w-6 h-6"></i>
+      </div>
+      <h1 class="text-2xl font-bold tracking-tight text-slate-800 mb-1">AI Student Assistance (Demo)</h1>
+      <p class="text-xs text-slate-400 font-semibold mb-6">Demo Interface Sandbox (No External REST APIs)</p>
+      
+      <div class="space-y-4 text-left">
+        <div>
+          <label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest pl-1 mb-1 block">Authentication Email</label>
+          <input id="email" type="email" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-xs font-semibold focus:outline-none focus:border-blue-500 transition-all placeholder-slate-400" placeholder="e.g. user@domain.com">
+        </div>
+        <div>
+          <label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest pl-1 mb-1 block">Security Token (Password)</label>
+          <input id="password" type="password" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-xs font-semibold focus:outline-none focus:border-blue-500 transition-all placeholder-slate-400" placeholder="e.g. password123">
+        </div>
+        
+        <button onclick="loginOrCreateAccount()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-xl text-xs shadow-md transition-all flex items-center justify-center space-x-1.5 focus:outline-none">
+          <span>Launch Demo Dashboard</span>
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MAIN CONTENT CONTENT CONTAINER ==================== -->
+  <div id="mainContent" class="hidden min-h-screen flex">
+    
+    <!-- LEFT SIDEBAR CONTAINER -->
+    <aside class="w-64 bg-slate-900 border-r border-slate-800 text-slate-400 flex flex-col fixed inset-y-0 z-30">
+      <div class="p-6 border-b border-slate-800 flex items-center space-x-2.5">
+        <div class="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-sm">
+          <i data-lucide="graduation-cap" class="w-4 h-4"></i>
+        </div>
+        <div>
+          <span class="font-extrabold text-sm text-slate-100 tracking-tight leading-none block">AI Student Assistance</span>
+          <span class="text-[9px] uppercase tracking-wider text-slate-500 font-extrabold leading-none mt-1 block">Demo Sandbox</span>
+        </div>
+      </div>
+      
+      <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto custom-scrollbar">
+        <button id="nav-todo" onclick="showTab('todo')" class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all text-slate-500 hover:bg-slate-800 hover:text-slate-200 w-full text-left font-bold text-xs uppercase tracking-wider">
+          <i data-lucide="check-square" class="w-4.5 h-4.5"></i>
+          <span>Tasks Backlog</span>
+        </button>
+        <button id="nav-pomodoro" onclick="showTab('pomodoro')" class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all text-slate-500 hover:bg-slate-800 hover:text-slate-200 w-full text-left font-bold text-xs uppercase tracking-wider">
+          <i data-lucide="timer" class="w-4.5 h-4.5"></i>
+          <span>Pomodoro Timer</span>
+        </button>
+        <button id="nav-calendar" onclick="showTab('calendar')" class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all text-slate-500 hover:bg-slate-800 hover:text-slate-200 w-full text-left font-bold text-xs uppercase tracking-wider">
+          <i data-lucide="calendar" class="w-4.5 h-4.5"></i>
+          <span>Calendar</span>
+        </button>
+        <button id="nav-flashcard" onclick="showTab('flashcard')" class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all text-slate-500 hover:bg-slate-800 hover:text-slate-200 w-full text-left font-bold text-xs uppercase tracking-wider">
+          <i data-lucide="brain" class="w-4.5 h-4.5"></i>
+          <span>Flashcards</span>
+        </button>
+      </nav>
+      
+      <div class="p-4 border-t border-slate-800 bg-slate-950/20">
+        <div class="flex items-center justify-between p-3 rounded-xl bg-slate-850 border border-slate-850 text-xs shadow-inner">
+          <div class="flex items-center space-x-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-blue-500 border border-blue-400"></span>
+            <span class="font-bold text-[10px] text-slate-400 text-slate-300">Demo Mode Active</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- RIGHT CONTENT CONTAINER -->
+    <div class="pl-64 flex-1 flex flex-col min-h-screen">
+      
+      <!-- TOP NAV HEADER -->
+      <header class="h-16 border-b border-slate-200 bg-white/70 backdrop-blur-md sticky top-0 z-20 flex items-center justify-between px-8">
+        <h2 id="viewTitleHeader" class="text-sm font-extrabold text-slate-800 tracking-tight">Tasks Backlog</h2>
+        
+        <div class="flex items-center space-x-6">
+          <div class="flex items-center space-x-3 pl-3 border-l border-slate-200">
+            <span id="userEmail" class="font-bold text-xs text-slate-700">user@domain.com</span>
+            <button onclick="logout()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-800 transition-colors" title="Logout">
+              <i data-lucide="log-out" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main class="flex-1 p-8 space-y-6">
+
+        <!-- COMING EVENTS - TODO TAB -->
+        <div id="todo" class="hidden space-y-6">
+          <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-premium">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
+              <span class="text-xs uppercase font-extrabold text-slate-400">Todo List Table</span>
+            </div>
+            
+            <div class="overflow-x-auto">
+              <table class="w-full border-collapse text-left text-xs font-semibold text-slate-700">
+                <thead>
+                  <tr class="border-b border-slate-150 text-slate-400 uppercase tracking-widest text-[9px]">
+                    <th class="pb-3 pr-4 font-bold">Task Content</th>
+                    <th class="pb-3 pr-4 font-bold">Operations</th>
+                    <th class="pb-3 pr-4 font-bold">State</th>
+                  </tr>
+                </thead>
+                <tbody id="taskList">
+                  <!-- Loaded dynamically -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Create tasks inputs -->
+            <div class="flex items-center space-x-4 mt-6 pt-4 border-t border-slate-50">
+              <input id="taskInput" type="text" class="flex-1 bg-slate-50 hover:bg-slate-100/50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-semibold focus:outline-none focus:bg-white focus:border-blue-500 transition-all" placeholder="Add a new task description...">
+              <button onclick="addTask()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-6 rounded-xl text-xs shadow transition-all focus:outline-none">
+                Add Task
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- POMODORO TIMER PANEL -->
+        <div id="pomodoro" class="hidden space-y-6">
+          <div class="bg-white p-8 rounded-2xl border border-slate-200/80 shadow-premium flex flex-col items-center">
+            
+            <div class="relative flex items-center justify-center my-6">
+              <!-- SVG circular countdown progress bar -->
+              <svg width="200" height="200" viewBox="0 0 220 220" class="transform -rotate-90">
+                <circle cx="110" cy="110" r="95" stroke="#f1f5f9" stroke-width="8" fill="transparent" />
+                <circle id="pomodoroTimerRing" cx="110" cy="110" r="95" stroke="#2563eb" stroke-width="8" fill="transparent"
+                        stroke-dasharray="597" stroke-dashoffset="0" stroke-linecap="round" class="transition-all duration-1000 ease-out" />
+              </svg>
+              <div class="absolute flex flex-col items-center justify-center">
+                <h3 id="timeDisplay" class="text-4xl font-extrabold text-slate-800 tracking-tight">25:00</h3>
+                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">Focus Timer</span>
+              </div>
+            </div>
+
+            <div class="flex mb-4 gap-3 w-full max-w-md items-end">
+              <div class="flex-1 text-left">
+                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 block">Adjust duration minutes</label>
+                <input id="pomodoroInput" type="number" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-semibold focus:outline-none focus:bg-white" placeholder="e.g. 25" defaultValue="25">
+              </div>
+              <button onclick="startPomodoro()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-4 rounded-xl text-xs shadow transition-all focus:outline-none">Start</button>
+              <button onclick="pausePomodoro()" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-2.5 px-4 rounded-xl text-xs shadow transition-all focus:outline-none">Pause</button>
+              <button onclick="resumePomodoro()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2.5 px-4 rounded-xl text-xs shadow transition-all focus:outline-none">Resume</button>
+              <button onclick="endPomodoro()" class="bg-rose-600 hover:bg-rose-700 text-white font-bold py-2.5 px-4 rounded-xl text-xs shadow transition-all focus:outline-none">End</button>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- CALENDAR INTERFACES -->
+        <div id="calendar" class="hidden space-y-6">
+          <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-premium">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
+              <span class="text-xs uppercase font-extrabold text-slate-400">Events Organizer</span>
+            </div>
+
+            <div class="flex mb-4 gap-3 items-end">
+              <div class="w-48 text-left">
+                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 block">Event Date</label>
+                <input id="calendarInput" type="date" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none">
+              </div>
+              <div class="flex-1 text-left">
+                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 block">Description</label>
+                <input id="taskInputCalendar" type="text" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-xs font-semibold focus:outline-none" placeholder="Chemistry midterm, team retrospectives...">
+              </div>
+              <button onclick="addCalendarEvent()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-xl text-xs shadow transition-all focus:outline-none">Add Event</button>
+            </div>
+
+            <div id="calendarEvents" class="space-y-2 mt-6 pt-6 border-t border-slate-50">
+              <!-- Render calendar items -->
+            </div>
+          </div>
+        </div>
+
+        <!-- FLASHCARDS INTERFACES -->
+        <div id="flashcard" class="hidden space-y-6">
+          <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-premium">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
+              <span class="text-xs uppercase font-extrabold text-slate-400">Mock Quiz Cards Deck</span>
+            </div>
+            
+            <button onclick="generateFlashcard()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 px-4 rounded-xl text-xs shadow-md transition-all flex items-center justify-center space-x-1.5 focus:outline-none">
+              <i data-lucide="cpu" class="w-4.5 h-4.5"></i>
+              <span>Generate Sample Flashcard</span>
+            </button>
+            
+            <div id="flashcardContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-8">
+              <!-- Cards here -->
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <script>
+    // Authentication Logic
+    function loginOrCreateAccount() {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      if (email && password) {
+        localStorage.setItem("userEmail", email);
+        localStorage.setItem("userPassword", password);
+        showMainPage();
+      } else {
+        alert("Please enter both email and password");
+      }
+    }
+
+    function showMainPage() {
+      const email = localStorage.getItem("userEmail");
+      if (email) {
+        document.getElementById("loginPage").classList.add("hidden");
+        document.getElementById("mainContent").classList.remove("hidden");
+        document.getElementById("userEmail").innerText = email;
+        showTab('todo');
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem("userEmail");
+      localStorage.removeItem("userPassword");
+      document.getElementById("mainContent").classList.add("hidden");
+      document.getElementById("loginPage").classList.remove("hidden");
+    }
+
+    // Tabs toggle
+    function showTab(tabId) {
+      const tabs = ["todo", "pomodoro", "calendar", "flashcard"];
+      tabs.forEach((tab) => {
+        const pane = document.getElementById(tab);
+        if (pane) pane.classList.add("hidden");
+        
+        const navBtn = document.getElementById(`nav-${tab}`);
+        if(navBtn) navBtn.className = "flex items-center space-x-3 px-4 py-3 rounded-xl transition-all text-slate-500 hover:bg-slate-800 hover:text-slate-200 w-full text-left font-bold text-xs uppercase tracking-wider";
+      });
+
+      const element = document.getElementById(tabId);
+      if (element) element.classList.remove("hidden");
+
+      const navBtn = document.getElementById(`nav-${tabId}`);
+      if (navBtn) navBtn.className = "flex items-center space-x-3 px-4 py-3 rounded-xl sidebar-active w-full text-left font-bold text-xs uppercase tracking-wider";
+
+      const headerTitles = {
+        'todo': 'Tasks Backlog Sandbox',
+        'pomodoro': 'Pomodoro Sandbox',
+        'calendar': 'Calendar Sandbox',
+        'flashcard': 'Flashcard Sandbox'
+      };
+      document.getElementById('viewTitleHeader').textContent = headerTitles[tabId] || 'Sandbox';
+      lucide.createIcons();
+    }
+
+    // Task tables list
+    let tasks = [];
+
+    function addTask() {
+      const taskInput = document.getElementById("taskInput");
+      const task = taskInput.value.trim();
+      if (task) {
+        tasks.push({ task, completed: false });
+        taskInput.value = "";
+        renderTodoList();
+      }
+    }
+
+    function renderTodoList() {
+      const taskList = document.getElementById("taskList");
+      taskList.innerHTML = "";
+      tasks.forEach((task, index) => {
+        const row = document.createElement("tr");
+        row.className = "border-b border-slate-100 hover:bg-slate-50 transition-colors";
+        row.innerHTML = `
+          <td class="py-4 pr-4 font-semibold text-slate-700 ${task.completed ? 'line-through text-slate-400' : ''}">${task.task}</td>
+          <td class="py-4 pr-4">
+            <div class="flex items-center space-x-2">
+              <button onclick="markCompleted(${index})" class="px-2 py-1 bg-green-50 hover:bg-green-100 text-green-600 rounded text-[10px] font-bold">Complete</button>
+              <button onclick="removeTask(${index})" class="px-2 py-1 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded text-[10px] font-bold">Remove</button>
+            </div>
+          </td>
+          <td class="py-4 pr-4">
+            <span class="px-2 py-0.5 rounded font-bold text-[9px] uppercase tracking-wider ${task.completed ? 'bg-green-50 text-green-600' : 'bg-amber-50 text-amber-500'}">
+              ${task.completed ? 'Completed' : 'Pending'}
+            </span>
+          </td>
+        `;
+        taskList.appendChild(row);
+      });
+    }
+
+    function markCompleted(index) {
+      tasks[index].completed = true;
+      renderTodoList();
+    }
+
+    function removeTask(index) {
+      tasks.splice(index, 1);
+      renderTodoList();
+    }
+
+    // Pomodoro Timer
+    let timerInterval;
+    let timerMinutes = 25;
+    let timerSeconds = 0;
+    let isPaused = false;
+    let totalTimerTime = 1500;
+
+    function startPomodoro() {
+      timerMinutes = parseInt(document.getElementById("pomodoroInput").value) || 25;
+      timerSeconds = 0;
+      totalTimerTime = timerMinutes * 60;
+      updatePomodoroDisplay();
+      if(timerInterval) clearInterval(timerInterval);
+      timerInterval = setInterval(updatePomodoroTimer, 1000);
+      isPaused = false;
+    }
+
+    function updatePomodoroTimer() {
+      if (timerSeconds === 0) {
+        if (timerMinutes === 0) {
+          clearInterval(timerInterval);
+          alert("Pomodoro complete! Take a break.");
+        } else {
+          timerMinutes--;
+          timerSeconds = 59;
+        }
+      } else {
+        timerSeconds--;
+      }
+      updatePomodoroDisplay();
+    }
+
+    function updatePomodoroDisplay() {
+      const minutesStr = String(timerMinutes).padStart(2, "0");
+      const secondsStr = String(timerSeconds).padStart(2, "0");
+      
+      document.getElementById("timeDisplay").innerText = `${minutesStr}:${secondsStr}`;
+      
+      // Update SVG Progress ring
+      const ring = document.getElementById("pomodoroTimerRing");
+      if (ring) {
+        const circumference = 597;
+        const total = totalTimerTime;
+        const remaining = timerMinutes * 60 + timerSeconds;
+        const percentage = remaining / total;
+        const offset = circumference * (1 - percentage);
+        ring.style.strokeDashoffset = offset;
+      }
+    }
+
+    function pausePomodoro() {
+      clearInterval(timerInterval);
+      isPaused = true;
+    }
+
+    function resumePomodoro() {
+      if (isPaused) {
+        timerInterval = setInterval(updatePomodoroTimer, 1000);
+        isPaused = false;
+      }
+    }
+
+    function endPomodoro() {
+      clearInterval(timerInterval);
+      timerMinutes = 25;
+      timerSeconds = 0;
+      updatePomodoroDisplay();
+    }
+
+    // Calendar Events
+    let calendarEvents = [];
+
+    function addCalendarEvent() {
+      const dateInput = document.getElementById("calendarInput").value;
+      const taskInput = document.getElementById("taskInputCalendar").value.trim();
+
+      if (dateInput && taskInput) {
+        const event = { date: dateInput, task: taskInput };
+        calendarEvents.push(event);
+        document.getElementById("calendarInput").value = "";
+        document.getElementById("taskInputCalendar").value = "";
+        renderCalendarEvents();
+      }
+    }
+
+    function renderCalendarEvents() {
+      const calendarContainer = document.getElementById("calendarEvents");
+      calendarContainer.innerHTML = "";
+      calendarEvents.forEach((event) => {
+        const card = document.createElement("div");
+        card.className = "flex items-center justify-between p-3.5 bg-slate-50 border border-slate-100 rounded-xl";
+        card.innerHTML = `
+          <div>
+            <span class="text-[9px] font-bold bg-slate-100 text-slate-500 px-2 py-0.5 rounded tracking-wide mr-2">${event.date}</span>
+            <span class="text-xs font-semibold text-slate-700">${event.task}</span>
+          </div>
+        `;
+        calendarContainer.appendChild(card);
+      });
+    }
+
+    // Flashcards
+    function generateFlashcard() {
+      const flashcardContainer = document.getElementById("flashcardContainer");
+      const randomQuestion = "What makes PostgreSQL transactions reliable?";
+      const randomAnswer = "ACID compliance ensures databases resolve data consistently.";
+      
+      const card = document.createElement("div");
+      card.className = "perspective-1000 w-full h-40 cursor-pointer relative group";
+      card.onclick = function() {
+        this.querySelector('.card-inner').classList.toggle('card-flipped');
+      };
+      
+      card.innerHTML = `
+        <div class="card-inner w-full h-full relative transform-style-3d transition-transform duration-500 ease-out">
+          <!-- Front Face -->
+          <div class="backface-hidden absolute inset-0 bg-white border border-slate-200 rounded-2xl p-5 flex flex-col justify-between shadow-sm">
+            <div>
+              <span class="text-[9px] font-bold bg-blue-50 text-blue-600 px-2 py-0.5 rounded uppercase tracking-wider">Trivia Q</span>
+              <p class="text-xs font-bold text-slate-700 mt-3 pr-2">${randomQuestion}</p>
+            </div>
+            <div class="text-[10px] text-slate-400 border-t border-slate-50 pt-2 font-medium">Click to flip</div>
+          </div>
+          <!-- Back Face -->
+          <div class="backface-hidden rotate-y-180 absolute inset-0 bg-blue-600 border border-blue-700 rounded-2xl p-5 flex flex-col justify-between shadow-md text-white">
+            <div>
+              <span class="text-[9px] font-bold bg-white/20 text-white/90 px-2 py-0.5 rounded uppercase tracking-wider">Answer Key</span>
+              <p class="text-xs font-semibold mt-3 text-white">${randomAnswer}</p>
+            </div>
+            <div class="text-[10px] text-white/60 border-t border-white/10 pt-2 font-semibold">Click to return to face</div>
+          </div>
+        </div>
+      `;
+      flashcardContainer.appendChild(card);
+      lucide.createIcons();
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      // Check session
+      const user = localStorage.getItem("userEmail");
+      if (user) {
+        showMainPage();
+      } else {
+        document.getElementById("loginPage").classList.remove("hidden");
+      }
+      lucide.createIcons();
+    });
+  </script>
+</body>
+</html>

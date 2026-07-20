@@ -1,0 +1,168 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+/* ==================== GLOBAL LAYOUT & LIGHT THEME ==================== */
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+
+/* Custom Scrollbar Styles */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Glassmorphism helpers for light cards */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(241, 245, 249, 0.9);
+}
+
+/* Drag overlay highlight */
+.drag-over {
+  border: 2px dashed #2563eb !important;
+  background-color: rgba(37, 99, 235, 0.04) !important;
+}
+
+/* Active sidebar element indicator */
+.sidebar-active {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  border-left: 4px solid #3b82f6 !important;
+}
+
+/* Glowing animation */
+@keyframes sync-pulse {
+  0% { transform: scale(0.95); opacity: 0.5; }
+  50% { transform: scale(1.05); opacity: 1; }
+  100% { transform: scale(0.95); opacity: 0.5; }
+}
+
+.sync-dot-pulse {
+  animation: sync-pulse 2s infinite ease-in-out;
+}
+
+/* 3D Card Flip styles */
+.perspective-1000 {
+  perspective: 1000px;
+}
+.transform-style-3d {
+  transform-style: preserve-3d;
+}
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+.card-flipped {
+  transform: rotateY(180deg) !important;
+}
+
+/* Flashcard Front Face (light style) */
+.backface-hidden.absolute {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04) !important;
+  border-radius: 16px !important;
+}
+
+/* Flashcard Back Face (royal blue style) */
+.backface-hidden.rotate-y-180 {
+  background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%) !important;
+  border: 1px solid #1d4ed8 !important;
+  box-shadow: 0 4px 12px rgba(30, 64, 175, 0.25) !important;
+}
+
+/* ==================== DARK HEADERS & NAV OVERRIDES ==================== */
+/* Left Sidebar */
+aside {
+  background-color: #0f172a !important; /* dark slate bg */
+  border-right: 1px solid #1e293b !important;
+  color: #94a3b8 !important;
+}
+aside button {
+  color: #94a3b8 !important;
+}
+/* Re-style text spans inside sidebar */
+aside span {
+  color: #cbd5e1 !important;
+}
+aside button:hover {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  color: #ffffff !important;
+}
+aside button:hover span {
+  color: #ffffff !important;
+}
+
+/* Above Panel (Top Header) */
+header {
+  background-color: #0f172a !important; /* matches sidebar exactly */
+  border-bottom: 1px solid #1e293b !important;
+}
+
+/* Header typography and text styling overrides to prevent dark slate text on dark background */
+header #viewTitleHeader, header h2 {
+  color: #ffffff !important;
+}
+header #userEmail {
+  color: #e2e8f0 !important;
+}
+header .text-slate-800 {
+  color: #ffffff !important;
+}
+header .text-slate-700 {
+  color: #e2e8f0 !important;
+}
+header .text-slate-400 {
+  color: #94a3b8 !important;
+}
+header i, header svg {
+  color: #94a3b8 !important;
+}
+header button:hover i, header button:hover svg {
+  color: #ffffff !important;
+}
+
+/* Header search bar input */
+header input {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #ffffff !important;
+}
+header input::placeholder {
+  color: #64748b !important;
+}
+header input:focus {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.25) !important;
+}
+
+/* User profile avatar backdrop in header */
+header .bg-blue-600\/10 {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: #3b82f6 !important;
+}
+
+/* Pomodoro countdown ring */
+#pomodoroTimerRing {
+  stroke: #2563eb;
+  filter: none;
+}
