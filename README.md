@@ -1,198 +1,538 @@
-# 🎓 AI Student Assistance
+# 🎓 AI Student Assistance Platform
 
-<<<<<<< HEAD
-A SaaS-style client-side productivity workspace built for students to streamline task organization, flashcard synthesis, and academic scheduling. This project features a clean, responsive dual-tone dashboard, interactive widgets, local offline failover, and a live REST API logging console, designed to match the modern aesthetics of Vercel and Linear.
-=======
-A production-grade, full-stack **AI-powered student productivity platform** combining Kanban task management, academic scheduling, Pomodoro focus tracking, interactive productivity analytics, AI flashcard synthesis, and active recall study mode.
+An AI-powered student productivity platform designed to help students manage tasks, academic schedules, study sessions, productivity, and flashcard-based learning in one unified workspace.
 
-Built with **Python + Flask**, **PostgreSQL / SQLite via SQLAlchemy**, **Tailwind CSS**, and **Chart.js**.
->>>>>>> df1e5fd (Upgrade AI Student Assistance platform)
+Built with **Python, Flask, SQLAlchemy, PostgreSQL/SQLite, Vanilla JavaScript, Tailwind CSS, Chart.js, and Lucide**.
 
 ---
 
-## ⚡ Core Features
+## ✨ Features
 
-<<<<<<< HEAD
-- **📊 Operations Dashboard**: Real-time productivity telemetry tracking weekly study metrics (using interactive Chart.js line graphs), active queue checklists, and completed sessions.
-- **📋 Kanban Task Backlog**: A drag-and-drop workflow pipeline containing task cards, priority indicators (High, Medium, Low), category badges, and due dates.
-- **📅 Study Scheduler**: An interactive monthly grid calendar modal allowing students to insert, update, and manage academic agenda items.
-- **⏱️ Cognitive Pomodoro Timer**: A circular SVG progress countdown clock supporting user session goals (25m / 50m / 15m presets) and history logs.
-- **🧠 AI Flashcard Deck**: A 3D-flipping flashcard study engine that supports custom topic filtering and card creation.
-- **🛠️ PostgreSQL Telemetry Console**: A simulated developer console logging client-side REST database operations (`GET`, `POST`, `PUT`, `DELETE`) with realistic latency mappings and database keys.
-=======
-- **📊 Operations Dashboard**: Real-time academic command center answering:
-  1. *What do I need to do today?* (Prioritized daily backlog checklist with 1-click completion).
-  2. *How productive have I been?* (Study minutes, streak counter, task completion progress bar).
-  3. *What should I study next?* (AI recommendation linking to upcoming exams or lowest mastery flashcard deck).
-- **📋 Kanban Task Pipeline**: Full drag-and-drop workflow across **Planned Backlog (To Do)**, **In Progress**, and **Verified Finished (Completed)**. Includes instant search, category filters, priority indicators (High, Medium, Low), sort orders, and **overdue task warning badges**.
-- **📅 Academic Class & Agenda Scheduler**: Monthly interactive grid with color-coded categories:
-  - Classes (Blue)
-  - Exams (Red)
-  - Assignments (Amber)
-  - Deadlines (Purple)
-  - Study Sessions (Emerald)
-  - Other (Slate)
-  Includes start/end times, upcoming agenda list, and completion toggles.
-- **⏱️ Cognitive Pomodoro Focus**: Circular SVG countdown with customizable presets (25m Focus, 5m Short Break, 15m Long Break) and custom durations. Automatically commits completed study sessions to the backend database to track focus telemetry and daily streaks.
-- **🧠 AI Flashcard Synthesis & Study System**:
-  - Genuine AI-powered flashcard generation from topics, lecture transcripts, and study notes.
-  - **Pre-Save Review Modal**: Inspect, edit questions/answers/difficulty, discard unwanted cards, and select target deck before committing.
-  - **Transparent Fallback**: When an external AI key (`GEMINI_API_KEY`) is not configured, the system uses an intelligent **Smart Heuristic Extraction Engine** (clearly labeled) so the app remains fully functional without fake claims.
-  - **Dedicated Study Mode**: Fullscreen/distraction-free study interface with 3D card flips, keyboard shortcuts (`Space` to flip, `1` for Needs Review, `2` for Mastered, Arrow keys for navigation), and live mastery tracking (e.g. *7 / 20 cards reviewed • 70% mastered*).
-- **📈 Productivity Intelligence Analytics**:
-  - Tasks Completed Per Day (Bar chart, last 7 days)
-  - Daily Study Hours & Pomodoro Session trends (Area line chart)
-  - Backlog Status Distribution (Donut chart)
-  - Academic Category Breakdown (Horizontal bar chart)
-- **🔐 Secure User Accounts**: Full user authentication with registration, login, JWT token authorization, and salted password hashing (`scrypt`/`pbkdf2:sha256`). All data is strictly scoped to the authenticated user.
-- **🛠️ Live REST API Telemetry Console**: Real-time developer logging monitor tracking every HTTP call (`method`, `url`, `status`, `latency in ms`).
+### 📊 Student Dashboard
+
+A centralized productivity dashboard that provides an overview of:
+
+* Daily tasks
+* Study time
+* Completed tasks
+* Productivity streaks
+* Upcoming academic events
+* Flashcard progress
+* Productivity analytics
 
 ---
 
-## 🏗️ Backend Architecture
+### 📋 Kanban Task Management
 
+Manage academic and personal tasks through a drag-and-drop Kanban workflow.
+
+* To Do
+* In Progress
+* Completed
+* Task priorities
+* Categories
+* Due dates
+* Search and filtering
+* Sorting
+* Overdue task indicators
+
+---
+
+### 📅 Academic Calendar
+
+Organize academic activities using an interactive calendar.
+
+Supported event types include:
+
+* Classes
+* Exams
+* Assignments
+* Deadlines
+* Study Sessions
+* Other events
+
+Each event can include a title, description, date, start time, end time, and category.
+
+---
+
+### ⏱️ Pomodoro Focus Timer
+
+A customizable Pomodoro timer designed to support focused study sessions.
+
+Default presets:
+
+* **25 minutes — Focus**
+* **5 minutes — Short Break**
+* **15 minutes — Long Break**
+
+Completed study sessions are recorded and used for productivity tracking.
+
+---
+
+### 🧠 AI Flashcard Generation
+
+Generate flashcards from study material such as:
+
+* Topics
+* Notes
+* Lecture content
+* Study text
+
+The application supports AI-powered flashcard generation through the backend.
+
+Generated flashcards can be reviewed and edited before being saved.
+
+When an external AI key is unavailable, the application uses a clearly identified **Smart Heuristic Extraction Engine** as a local fallback.
+
+---
+
+### 📚 Flashcard Study Mode
+
+Study using interactive flashcards and active recall.
+
+Features include:
+
+* Flashcard decks
+* Question/answer cards
+* Difficulty levels
+* Card editing
+* Card deletion
+* Topic filtering
+* Active recall tracking
+* Mastery percentage
+* Fullscreen study mode
+* Keyboard shortcuts
+
+Example keyboard controls:
+
+| Key     | Action           |
+| ------- | ---------------- |
+| `Space` | Flip card        |
+| `1`     | Needs Review     |
+| `2`     | Mark as Mastered |
+| `← / →` | Navigate cards   |
+
+---
+
+### 📈 Productivity Analytics
+
+Interactive analytics powered by **Chart.js**.
+
+The dashboard tracks:
+
+* Tasks completed per day
+* Study hours
+* Pomodoro sessions
+* Task status distribution
+* Academic category distribution
+* Productivity trends
+
+---
+
+### 🔐 User Authentication
+
+The platform includes user authentication with:
+
+* Registration
+* Login
+* Logout
+* JWT authorization
+* Password hashing
+* User-specific data access
+
+Application data is scoped to the authenticated user.
+
+---
+
+### 🛠️ REST API
+
+The frontend communicates with the Flask backend through REST APIs.
+
+The application provides APIs for:
+
+* Authentication
+* Tasks
+* Calendar events
+* Study sessions
+* Flashcards
+* AI flashcard generation
+* Productivity analytics
+
+---
+
+# 🏗️ Architecture
+
+The application follows a full-stack architecture:
+
+```text
+                ┌─────────────────────┐
+                │       Student       │
+                └──────────┬──────────┘
+                           │
+                           ▼
+                ┌─────────────────────┐
+                │  Frontend Interface │
+                │ HTML / JavaScript   │
+                │ Tailwind / Charts   │
+                └──────────┬──────────┘
+                           │
+                       REST API
+                           │
+                           ▼
+                ┌─────────────────────┐
+                │    Flask Backend    │
+                │  Authentication     │
+                │  Business Logic     │
+                │  API Routes         │
+                └──────────┬──────────┘
+                           │
+                       SQLAlchemy
+                           │
+                           ▼
+                ┌─────────────────────┐
+                │ PostgreSQL / SQLite │
+                └─────────────────────┘
 ```
-backend/
-├── app.py                      # Flask app factory, static serving, DB initialization
-├── config.py                   # Configuration, PostgreSQL / SQLite URI, JWT settings
-├── requirements.txt            # Python dependencies
-├── .env.example                # Example environment variables
-├── models/
-│   ├── __init__.py             # SQLAlchemy instance and model exports
-│   ├── user.py                 # User model with secure password hashing
-│   ├── task.py                 # Task model (Kanban statuses, priorities, dates)
-│   ├── calendar_event.py       # Academic event model with times and categories
-│   ├── study_session.py        # Pomodoro study session logs
-│   └── flashcard.py            # FlashcardDeck and Flashcard models
-├── routes/
-│   ├── __init__.py
-│   ├── auth.py                 # /api/auth (register, login, me, logout)
-│   ├── tasks.py                # /api/tasks (CRUD, filters, reorder)
-│   ├── calendar.py             # /api/calendar (CRUD, date filtering)
-│   ├── sessions.py             # /api/sessions (Pomodoro logging)
-│   ├── flashcards.py           # /api/flashcards & /api/flashcards/decks
-│   ├── ai.py                   # /api/flashcards/generate
-│   └── analytics.py            # /api/analytics (Productivity metrics)
-├── services/
-│   ├── __init__.py
-│   ├── ai_service.py           # Gemini AI synthesis + Heuristic fallback
-│   └── analytics_service.py    # Multi-dimensional metric aggregation
-├── utils/
-│   ├── __init__.py
-│   ├── auth_middleware.py      # JWT @token_required decorator
-│   └── helpers.py              # Validation and response helpers
-└── tests/
-    └── test_api.py             # Complete automated test suite
+
+### AI Flashcard Workflow
+
+```text
+Study Material
+      │
+      ▼
+Frontend
+      │
+      ▼
+Flask API
+      │
+      ▼
+AI Service
+      │
+      ▼
+Generated Flashcards
+      │
+      ▼
+Review / Edit
+      │
+      ▼
+Database
 ```
->>>>>>> df1e5fd (Upgrade AI Student Assistance platform)
 
 ---
 
-## 🚀 How to Run Locally
+# 🛠️ Tech Stack
 
-<<<<<<< HEAD
-### Approach 1: Simple Local Server (Recommended)
-Static pages function best when served via HTTP rather than straight filenames (`file://`). Open a terminal in the project directory and run one of the following:
-
-- **Node.js**:
-  ```bash
-  npx http-server -p 8000
-  ```
-- **Python**:
-  ```bash
-  python -m http.server 8000
-  ```
-
-Open your browser and navigate to: **`http://localhost:8000`**
-
-### Approach 2: Direct Browser Entry
-You can also launch the platform by double-clicking the physical `index.html` file inside your explorer to run the page in "Offline Storage" fallback mode.
+| Layer          | Technology                         |
+| -------------- | ---------------------------------- |
+| Frontend       | HTML5, Vanilla JavaScript          |
+| Styling        | Tailwind CSS, Custom CSS           |
+| Backend        | Python, Flask                      |
+| API            | REST APIs                          |
+| ORM            | SQLAlchemy                         |
+| Database       | PostgreSQL / SQLite                |
+| Authentication | JWT                                |
+| AI             | Google Gemini API + local fallback |
+| Charts         | Chart.js                           |
+| Icons          | Lucide                             |
+| Testing        | Python unittest                    |
 
 ---
 
-## 🔑 Authentication
-The frontend implements an **Auto-Registration** workflow:
-* Enter any email (e.g. `student@domain.com`) and any 6-digit password.
-* The Client API automatically initializes a fresh profile container inside `localStorage` for that user.
+# 📁 Project Structure
+
+```text
+AI-Student-Assistance/
+│
+├── backend/
+│   ├── app.py
+│   ├── config.py
+│   ├── requirements.txt
+│   ├── .env.example
+│   │
+│   ├── models/
+│   │   ├── __init__.py
+│   │   ├── user.py
+│   │   ├── task.py
+│   │   ├── calendar_event.py
+│   │   ├── study_session.py
+│   │   └── flashcard.py
+│   │
+│   ├── routes/
+│   │   ├── __init__.py
+│   │   ├── auth.py
+│   │   ├── tasks.py
+│   │   ├── calendar.py
+│   │   ├── sessions.py
+│   │   ├── flashcards.py
+│   │   ├── ai.py
+│   │   └── analytics.py
+│   │
+│   ├── services/
+│   │   ├── __init__.py
+│   │   ├── ai_service.py
+│   │   └── analytics_service.py
+│   │
+│   ├── utils/
+│   │   ├── __init__.py
+│   │   ├── auth_middleware.py
+│   │   └── helpers.py
+│   │
+│   └── tests/
+│       └── test_api.py
+│
+├── index.html
+├── app.js
+├── style.css
+├── demo.html
+├── README.md
+└── .gitignore
+```
 
 ---
 
-## 🛠️ Tech Stack & Design Tokens
-* **Markup & Core Logic**: HTML5, Vanilla JavaScript.
-* **Styling Layer**: Tailwind CSS CDN, Custom CSS Glassmorphic Overrides.
-* **Database Telemetry**: Simulated PostgreSQL REST handler with local persistence.
-* **Libraries**: Lucide Icon set, Chart.js.
-=======
-### 1. Install Dependencies
-Ensure you have Python 3.10+ installed:
+# 🚀 Getting Started
+
+## Prerequisites
+
+Make sure you have:
+
+* Python 3.10+
+* pip
+* PostgreSQL (optional)
+* Google Gemini API key (optional)
+
+---
+
+## 1. Install Dependencies
+
+From the project root:
+
 ```bash
 pip install -r backend/requirements.txt
 ```
 
-### 2. Configure Database & Environment (Optional)
-Copy `.env.example` to `.env`:
-```bash
-cp backend/.env.example backend/.env
-```
-- **PostgreSQL**: Set `DATABASE_URL=postgresql://username:password@localhost:5432/student_assistance`.
-- **Zero Configuration (SQLite Fallback)**: If `DATABASE_URL` is left empty or PostgreSQL is not running, the application **automatically initializes and uses a local SQLite database** (`student_assistance.db`) so it works immediately out of the box!
-- **AI Integration (Optional)**: Provide `GEMINI_API_KEY` for Google Gemini flashcard generation. If omitted, the platform uses the built-in Smart Heuristic Extraction engine.
+---
 
-### 3. Start the Application Server
-Run the Flask server:
+## 2. Configure Environment Variables
+
+Create a `.env` file based on:
+
+```text
+backend/.env.example
+```
+
+Example configuration:
+
+```env
+DATABASE_URL=postgresql://username:password@localhost:5432/student_assistance
+SECRET_KEY=your-secret-key
+GEMINI_API_KEY=your-gemini-api-key
+```
+
+### Database
+
+PostgreSQL can be used as the primary database.
+
+The application also supports a local SQLite fallback when PostgreSQL is not configured, allowing the project to run locally without requiring a PostgreSQL server.
+
+### AI
+
+`GEMINI_API_KEY` is optional.
+
+When it is not configured, the application uses the built-in Smart Heuristic Extraction Engine as a local fallback.
+
+---
+
+## 3. Start the Application
+
+Run:
+
 ```bash
 python backend/app.py
 ```
-Open your browser and navigate to: **`http://localhost:5000`**
 
-The server automatically serves both the API endpoints and the frontend interface!
+Then open:
+
+```text
+http://localhost:5000
+```
+
+The Flask server provides the backend API and serves the frontend application.
 
 ---
 
-## 🧪 Running Automated Tests
+# 🧪 Testing
 
-Run the backend unit test suite:
+Run the backend test suite with:
+
 ```bash
 python -m unittest backend/tests/test_api.py
 ```
-This validates user registration, JWT authentication, task Kanban updates, calendar scheduling, Pomodoro session logging, flashcard deck mastery, and AI extraction fallback.
+
+The tests cover core functionality including:
+
+* User registration
+* Authentication
+* Task management
+* Kanban updates
+* Calendar scheduling
+* Pomodoro session logging
+* Flashcard functionality
+* AI extraction fallback
 
 ---
 
-## 📡 REST API Reference
+# 📡 REST API
 
-### Authentication
-- `POST /api/auth/register`: Create account (`email`, `password`, `name`)
-- `POST /api/auth/login`: Authenticate and receive JWT (`email`, `password`)
-- `GET /api/auth/me`: Query current authenticated profile
-- `POST /api/auth/logout`: Invalidate session
+## Authentication
 
-### Tasks (Kanban)
-- `GET /api/tasks`: List tasks (filters: `search`, `category`, `priority`, `sort`)
-- `POST /api/tasks`: Create task (`title`, `description`, `category`, `priority`, `due_date`, `status`)
-- `PUT /api/tasks/<id>`: Update task properties or move Kanban column
-- `DELETE /api/tasks/<id>`: Remove task
+| Method | Endpoint             | Description          |
+| ------ | -------------------- | -------------------- |
+| POST   | `/api/auth/register` | Create a new account |
+| POST   | `/api/auth/login`    | Authenticate a user  |
+| GET    | `/api/auth/me`       | Get current user     |
+| POST   | `/api/auth/logout`   | Log out              |
 
-### Academic Calendar
-- `GET /api/calendar`: List events (filters: `month`, `date`, `category`)
-- `POST /api/calendar`: Schedule event (`title`, `description`, `event_date`, `start_time`, `end_time`, `category`)
-- `PUT /api/calendar/<id>`: Edit event
-- `POST /api/calendar/<id>/toggle`: Toggle completion status
-- `DELETE /api/calendar/<id>`: Remove event
+---
 
-### Pomodoro Focus Sessions
-- `GET /api/sessions`: Query study session history
-- `POST /api/sessions`: Log completed session (`duration_minutes`, `session_type`, `topic`)
+## Tasks
 
-### AI Flashcards & Study Decks
-- `GET /api/flashcards/decks`: List user decks with mastery percentages
-- `POST /api/flashcards/decks`: Create deck (`title`, `description`, `color`)
-- `GET /api/flashcards`: List flashcards (filters: `deck_id`, `topic`, `difficulty`, `search`)
-- `POST /api/flashcards`: Create flashcard(s)
-- `POST /api/flashcards/<id>/review`: Record active recall result (`is_known: true/false`)
-- `DELETE /api/flashcards/<id>`: Remove flashcard
-- `POST /api/flashcards/generate`: Synthesize flashcards from text notes
+| Method | Endpoint          | Description    |
+| ------ | ----------------- | -------------- |
+| GET    | `/api/tasks`      | Retrieve tasks |
+| POST   | `/api/tasks`      | Create a task  |
+| PUT    | `/api/tasks/<id>` | Update a task  |
+| DELETE | `/api/tasks/<id>` | Delete a task  |
 
-### Productivity Analytics
-- `GET /api/analytics`: Retrieve aggregated weekly performance, study hours, and task distribution datasets.
->>>>>>> df1e5fd (Upgrade AI Student Assistance platform)
+Supported task filters include search, category, priority, and sorting.
+
+---
+
+## Academic Calendar
+
+| Method | Endpoint                    | Description              |
+| ------ | --------------------------- | ------------------------ |
+| GET    | `/api/calendar`             | Retrieve calendar events |
+| POST   | `/api/calendar`             | Create an event          |
+| PUT    | `/api/calendar/<id>`        | Update an event          |
+| POST   | `/api/calendar/<id>/toggle` | Toggle completion        |
+| DELETE | `/api/calendar/<id>`        | Delete an event          |
+
+---
+
+## Pomodoro Sessions
+
+| Method | Endpoint        | Description                |
+| ------ | --------------- | -------------------------- |
+| GET    | `/api/sessions` | Retrieve study sessions    |
+| POST   | `/api/sessions` | Record a completed session |
+
+---
+
+## Flashcards
+
+| Method | Endpoint                      | Description         |
+| ------ | ----------------------------- | ------------------- |
+| GET    | `/api/flashcards`             | Retrieve flashcards |
+| POST   | `/api/flashcards`             | Create flashcards   |
+| DELETE | `/api/flashcards/<id>`        | Delete a flashcard  |
+| POST   | `/api/flashcards/<id>/review` | Record study result |
+
+---
+
+## Flashcard Decks
+
+| Method | Endpoint                | Description    |
+| ------ | ----------------------- | -------------- |
+| GET    | `/api/flashcards/decks` | Retrieve decks |
+| POST   | `/api/flashcards/decks` | Create a deck  |
+
+---
+
+## AI Flashcards
+
+| Method | Endpoint                   | Description                             |
+| ------ | -------------------------- | --------------------------------------- |
+| POST   | `/api/flashcards/generate` | Generate flashcards from study material |
+
+---
+
+## Analytics
+
+| Method | Endpoint         | Description                     |
+| ------ | ---------------- | ------------------------------- |
+| GET    | `/api/analytics` | Retrieve productivity analytics |
+
+---
+
+# 🤖 AI Flashcard Generation
+
+The AI flashcard system allows students to convert study material into structured flashcards.
+
+The workflow is:
+
+1. Student enters study material.
+2. Frontend sends the content to the Flask API.
+3. Flask passes the content to the AI service.
+4. Generated flashcards are returned.
+5. Student reviews and edits the cards.
+6. Approved cards are saved to a flashcard deck.
+7. Study progress is tracked through the active recall system.
+
+If the Gemini API is unavailable, the application uses a clearly labeled local extraction fallback.
+
+---
+
+# 🔐 Authentication & Security
+
+The application implements:
+
+* Password hashing
+* JWT-based authentication
+* Protected API routes
+* User-specific data access
+* Environment-based configuration
+* Server-side AI API key handling
+
+Sensitive credentials should never be committed to the repository.
+
+---
+
+# 📊 Productivity Tracking
+
+The platform combines task and study data to provide students with a view of their productivity.
+
+Tracked information includes:
+
+* Completed tasks
+* Study minutes
+* Pomodoro sessions
+* Task distribution
+* Flashcard mastery
+* Productivity trends
+* Study streaks
+
+This information is visualized through the dashboard and Chart.js-based analytics.
+
+---
+
+# 🎯 Project Highlights
+
+* Full-stack student productivity platform
+* Flask REST API architecture
+* PostgreSQL / SQLite database support
+* SQLAlchemy ORM
+* JWT authentication
+* AI-assisted flashcard generation
+* Interactive Kanban task management
+* Academic calendar
+* Pomodoro focus tracking
+* Active recall flashcard study mode
+* Chart.js productivity analytics
+* Responsive student-focused interface
+
+---
+
+## 📄 License
+
+This project is developed for educational and portfolio purposes.
