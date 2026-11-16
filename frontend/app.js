@@ -40,7 +40,6 @@ const state = {
     source: "ai",
     sourceLabel: ""
   },
-  devLogs: [],
   charts: {
     dashboard: null,
     tasksPerDay: null,
@@ -64,52 +63,9 @@ const API_BASE = (() => {
   return "https://ai-student-assistance.onrender.com/api";
 })();
 
-// ==================== TELEMETRY & HTTP LAYER ====================
-
-function logDevConsole(method, endpoint, status, latency) {
-  const time = new Date().toLocaleTimeString();
-  const log = { time, method, endpoint, status, latency };
-  state.devLogs.unshift(log);
-  if (state.devLogs.length > 30) state.devLogs.pop();
-
-  const container = document.getElementById("apiLogConsole");
-  if (!container) return;
-
-  container.innerHTML = state.devLogs.map(l => {
-    let methodColor = "text-emerald-400";
-    if (l.method === "POST") methodColor = "text-blue-400";
-    if (l.method === "DELETE") methodColor = "text-rose-400";
-    if (l.method === "PUT") methodColor = "text-amber-400";
-
-    const isSuccess = String(l.status).startsWith("2");
-    const statusBg = isSuccess ? "bg-emerald-950/60 text-emerald-300 border-emerald-800" : "bg-rose-950/60 text-rose-300 border-rose-800";
-
-    return `
-      <div class="font-mono text-[11px] mb-1.5 flex items-center justify-between border-b border-slate-800/80 pb-1 opacity-95">
-        <div class="truncate max-w-[280px]">
-          <span class="text-slate-500">[${l.time}]</span>
-          <span class="${methodColor} font-bold mr-1.5">${l.method}</span>
-          <span class="text-slate-300 font-medium">${l.endpoint}</span>
-        </div>
-        <div class="flex items-center space-x-2 flex-shrink-0">
-          <span class="text-[9px] px-1.5 py-0.2 rounded border font-bold ${statusBg}">${l.status}</span>
-          <span class="text-slate-400 font-semibold text-[10px]">${l.latency}ms</span>
-        </div>
-      </div>
-    `;
-  }).join("");
-}
-
-function clearTelemetryLogs() {
-  state.devLogs = [];
-  const container = document.getElementById("apiLogConsole");
-  if (container) {
-    container.innerHTML = `<div class="text-center text-slate-500 text-xs font-medium py-32">Telemetry logs cleared. New queries will appear here.</div>`;
-  }
-}
+// ==================== HTTP API CLIENT LAYER ====================
 
 async function apiRequest(endpoint, options = {}) {
-  const start = performance.now();
   const method = options.method || "GET";
   const url = `${API_BASE}${endpoint}`;
 
@@ -128,10 +84,6 @@ async function apiRequest(endpoint, options = {}) {
       headers
     });
 
-    const latency = Math.round(performance.now() - start);
-    const statusText = `${response.status} ${response.statusText}`;
-    logDevConsole(method, endpoint, statusText, latency);
-
     if (response.status === 401) {
       // Session expired or invalid
       if (state.token) {
@@ -144,8 +96,6 @@ async function apiRequest(endpoint, options = {}) {
     const data = await response.json();
     return data;
   } catch (err) {
-    const latency = Math.round(performance.now() - start);
-    logDevConsole(method, endpoint, "Offline / Error", latency);
     console.error(`[API Error] ${method} ${endpoint}:`, err);
     return { success: false, error: "Failed to connect to backend server. Make sure the Flask server is running." };
   }
@@ -340,30 +290,13 @@ async function loadAllData() {
   if (analyticsRes.success) state.analytics = analyticsRes.data || null;
 
   populateTargetDeckSelects();
-  checkDbEngineHealth();
-}
-
-async function checkDbEngineHealth() {
-  try {
-    const res = await apiRequest("/health");
-    if (res.database) {
-      const dbBadge = document.getElementById("dbBadgeText");
-      const dbText = document.getElementById("dbIndicatorText");
-      const settingsEngine = document.getElementById("settingsDbEngine");
-      if (dbBadge) dbBadge.textContent = res.database.toUpperCase();
-      if (dbText) dbText.textContent = `${res.database.toUpperCase()} Live`;
-      if (settingsEngine) settingsEngine.textContent = res.database.toUpperCase();
-    }
-  } catch (e) {
-    // Ignore health check failure
-  }
 }
 
 // ==================== NAVIGATION TABS ====================
 
 function showTab(tabId) {
   state.activeTab = tabId;
-  const tabs = ["dashboard", "todo", "calendar", "pomodoro", "flashcard", "analytics", "settings"];
+  const tabs = ["dashboard", "todo", "calendar", "pomodoro", "flashcard", "analytics"];
 
   tabs.forEach(t => {
     const el = document.getElementById(t);
@@ -389,8 +322,7 @@ function showTab(tabId) {
     calendar: "Academic Class & Schedule Planner",
     pomodoro: "Cognitive Pomodoro Focus",
     flashcard: "AI Flashcards & Study Decks",
-    analytics: "Productivity Intelligence Analytics",
-    settings: "Database Console & Telemetry"
+    analytics: "Productivity Intelligence Analytics"
   };
   document.getElementById("viewTitleHeader").textContent = titles[tabId] || "Workspace";
 

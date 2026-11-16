@@ -161,22 +161,7 @@
           <i data-lucide="bar-chart-2" class="w-4.5 h-4.5"></i>
           <span>Productivity Analytics</span>
         </button>
-        <button id="nav-settings" onclick="showTab('settings')" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl transition-all text-slate-400 hover:bg-slate-800/80 hover:text-slate-200 w-full text-left font-bold text-xs">
-          <i data-lucide="terminal" class="w-4.5 h-4.5"></i>
-          <span>Database Console</span>
-        </button>
       </nav>
-
-      <!-- METADATA SYNC INDICATOR -->
-      <div class="p-3.5 border-t border-slate-800 bg-slate-950/30">
-        <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-850/60 border border-slate-800 text-xs shadow-inner">
-          <div class="flex items-center space-x-2">
-            <span id="dbIndicatorDot" class="w-2.5 h-2.5 rounded-full bg-emerald-500 sync-dot-pulse border border-emerald-400"></span>
-            <span id="dbIndicatorText" class="font-bold text-[10px] text-slate-300">REST API Synced</span>
-          </div>
-          <span id="dbBadgeText" class="text-[9px] font-extrabold text-emerald-400 px-1.5 py-0.5 rounded bg-emerald-950/50 border border-emerald-900/60 uppercase tracking-wider">ONLINE</span>
-        </div>
-      </div>
     </aside>
 
     <!-- RIGHT CONTENT CONTAINER -->
@@ -793,91 +778,6 @@
               </div>
             </div>
 
-          </div>
-        </div>
-
-        <!-- ==================== 7. DATABASE & DEVELOPER SETTINGS VIEW ==================== -->
-        <div id="settings" class="hidden space-y-6">
-          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            
-            <!-- Schema statistics panel -->
-            <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-premium lg:col-span-2 flex flex-col justify-between min-h-[440px]">
-              <div>
-                <span class="text-xs uppercase font-extrabold text-slate-400 mb-4 block">Schema Architecture Map</span>
-                
-                <div class="space-y-4 mt-6">
-                  <!-- Schema card 1: Users -->
-                  <div class="p-4 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-between">
-                    <div class="flex items-center space-x-3">
-                      <div class="p-2 bg-emerald-600/10 text-emerald-600 rounded-lg"><i data-lucide="table" class="w-4.5 h-4.5"></i></div>
-                      <div class="text-left text-xs leading-none">
-                        <span class="font-bold text-slate-700 block">users</span>
-                        <span class="text-[9px] text-slate-400 font-medium leading-none block mt-1">Fields: id (PK), email (VARCHAR UNIQUE), name, password_hash, created_at</span>
-                      </div>
-                    </div>
-                    <span class="text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded uppercase">SQLAlchemy</span>
-                  </div>
-
-                  <!-- Schema card 2: Tasks -->
-                  <div class="p-4 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-between">
-                    <div class="flex items-center space-x-3">
-                      <div class="p-2 bg-amber-600/10 text-amber-600 rounded-lg"><i data-lucide="table" class="w-4.5 h-4.5"></i></div>
-                      <div class="text-left text-xs leading-none">
-                        <span class="font-bold text-slate-700 block">tasks</span>
-                        <span class="text-[9px] text-slate-400 font-medium leading-none block mt-1">Fields: id, user_id (FK), title, description, priority, category, due_date, status</span>
-                      </div>
-                    </div>
-                    <span class="text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded uppercase">SQLAlchemy</span>
-                  </div>
-
-                  <!-- Schema card 3: Calendar Events -->
-                  <div class="p-4 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-between">
-                    <div class="flex items-center space-x-3">
-                      <div class="p-2 bg-rose-600/10 text-rose-600 rounded-lg"><i data-lucide="table" class="w-4.5 h-4.5"></i></div>
-                      <div class="text-left text-xs leading-none">
-                        <span class="font-bold text-slate-700 block">calendar_events</span>
-                        <span class="text-[9px] text-slate-400 font-medium leading-none block mt-1">Fields: id, user_id (FK), title, description, event_date, start_time, end_time, category</span>
-                      </div>
-                    </div>
-                    <span class="text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded uppercase">SQLAlchemy</span>
-                  </div>
-
-                  <!-- Schema card 4: Flashcards & Decks -->
-                  <div class="p-4 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-between">
-                    <div class="flex items-center space-x-3">
-                      <div class="p-2 bg-blue-600/10 text-blue-600 rounded-lg"><i data-lucide="table" class="w-4.5 h-4.5"></i></div>
-                      <div class="text-left text-xs leading-none">
-                        <span class="font-bold text-slate-700 block">flashcards & flashcard_decks</span>
-                        <span class="text-[9px] text-slate-400 font-medium leading-none block mt-1">Fields: id, user_id (FK), deck_id (FK), question, answer, topic, difficulty, is_known</span>
-                      </div>
-                    </div>
-                    <span class="text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded uppercase">SQLAlchemy</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Database connection note -->
-              <div class="p-4 rounded-xl border border-slate-100 bg-slate-50 flex items-center justify-between text-xs font-semibold text-slate-500">
-                <span>Database Engine: <span id="settingsDbEngine" class="text-emerald-500 font-bold">PostgreSQL / SQLite</span></span>
-                <span>Port: 5000</span>
-              </div>
-            </div>
-
-            <!-- Terminal Logger Console dashboard -->
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-premium flex flex-col justify-between min-h-[440px] text-slate-300">
-              <div class="flex items-center justify-between border-b border-slate-800 pb-3.5 mb-3.5">
-                <span class="text-[10px] uppercase font-extrabold text-blue-400 tracking-wider flex items-center">
-                  <i data-lucide="terminal" class="w-3.5 h-3.5 mr-1.5 animate-pulse"></i>
-                  REST API Live Telemetry
-                </span>
-                <button onclick="clearTelemetryLogs()" class="text-[10px] text-slate-500 hover:text-slate-300 transition-colors">Clear Logs</button>
-              </div>
-              
-              <!-- Console log listings -->
-              <div id="apiLogConsole" class="flex-1 overflow-y-auto custom-scrollbar space-y-1.5 max-h-[320px]">
-                <div class="text-center text-slate-500 text-xs font-medium py-32">Ready. Live HTTP REST API queries will log here.</div>
-              </div>
-            </div>
           </div>
         </div>
 
