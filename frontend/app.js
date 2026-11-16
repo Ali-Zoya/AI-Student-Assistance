@@ -50,8 +50,19 @@ const state = {
   }
 };
 
-// Determine API base url (supports both direct static hosting and standalone flask)
-const API_BASE = window.location.port === "5000" ? "/api" : "http://localhost:5000/api";
+// Determine API base url (supports local development, direct Flask hosting, and production on Render/Vercel)
+const API_BASE = (() => {
+  // If running locally
+  if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+    return window.location.port === "5000" ? "/api" : "http://localhost:5000/api";
+  }
+  // If served directly by the Render backend
+  if (window.location.hostname.includes("onrender.com")) {
+    return "/api";
+  }
+  // Deployed frontend (e.g. Vercel) connecting to production Render backend
+  return "https://ai-student-assistance.onrender.com/api";
+})();
 
 // ==================== TELEMETRY & HTTP LAYER ====================
 
