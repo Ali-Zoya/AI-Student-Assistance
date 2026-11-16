@@ -280,10 +280,12 @@ AI-Student-Assistance/
 │   └── tests/
 │       └── test_api.py
 │
-├── index.html
-├── app.js
-├── style.css
-├── demo.html
+├── frontend/
+│   ├── index.html
+│   ├── app.js
+│   ├── style.css
+│   └── demo.html
+│
 ├── README.md
 └── .gitignore
 ```

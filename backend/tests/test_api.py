@@ -204,5 +204,22 @@ class ApiTestCase(unittest.TestCase):
         self.assertEqual(data["source"], "heuristic")
         self.assertIn("What is Photosynthesis?", data["cards"][0]["question"])
 
+    def test_frontend_static_serving(self):
+        # Test index.html serving at root
+        res_root = self.client.get("/")
+        self.assertEqual(res_root.status_code, 200)
+        self.assertIn(b"AI Student Assistance", res_root.data)
+
+        # Test static assets serving
+        res_css = self.client.get("/style.css")
+        self.assertEqual(res_css.status_code, 200)
+
+        res_js = self.client.get("/app.js")
+        self.assertEqual(res_js.status_code, 200)
+
+        # Test 404 for nonexistent file
+        res_404 = self.client.get("/nonexistent.file")
+        self.assertEqual(res_404.status_code, 404)
+
 if __name__ == "__main__":
     unittest.main()

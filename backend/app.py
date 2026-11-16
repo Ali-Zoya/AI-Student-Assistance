@@ -8,6 +8,7 @@ from sqlalchemy.exc import OperationalError
 # Ensure parent directory is in python path
 BASE_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = BASE_DIR.parent
+FRONTEND_DIR = PROJECT_ROOT / "frontend"
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
@@ -22,7 +23,7 @@ from backend.routes.ai import ai_bp
 from backend.routes.analytics import analytics_bp
 
 def create_app(config_class=Config):
-    app = Flask(__name__, static_folder=str(PROJECT_ROOT))
+    app = Flask(__name__, static_folder=str(FRONTEND_DIR))
     app.config.from_object(config_class)
 
     # Enable CORS for all API endpoints
@@ -53,12 +54,16 @@ def create_app(config_class=Config):
     # Serve static frontend files for seamless standalone execution
     @app.route("/", methods=["GET"])
     def index():
-        return send_from_directory(str(PROJECT_ROOT), "index.html")
+        return send_from_directory(str(FRONTEND_DIR), "index.html")
 
     @app.route("/<path:filename>", methods=["GET"])
     def static_files(filename):
-        if (PROJECT_ROOT / filename).exists():
-            return send_from_directory(str(PROJECT_ROOT), filename)
+        if (FRONTEND_DIR / filename).is_file():
+            return send_from_directory(str(FRONTEND_DIR), filename)
+        if filename.startswith("frontend/"):
+            rel_path = filename[len("frontend/"):]
+            if (FRONTEND_DIR / rel_path).is_file():
+                return send_from_directory(str(FRONTEND_DIR), rel_path)
         return jsonify({"error": "File not found"}), 404
 
     # Ensure tables exist
