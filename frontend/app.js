@@ -74,7 +74,9 @@ async function apiRequest(endpoint, options = {}) {
     ...(options.headers || {})
   };
 
-  if (state.token) {
+  const isAuthEndpoint = endpoint.startsWith("/auth/login") || endpoint.startsWith("/auth/register");
+
+  if (state.token && !isAuthEndpoint) {
     headers["Authorization"] = `Bearer ${state.token}`;
   }
 
@@ -84,17 +86,24 @@ async function apiRequest(endpoint, options = {}) {
       headers
     });
 
+    const data = await response.json().catch(() => null);
+
     if (response.status === 401) {
-      // Session expired or invalid
-      if (state.token) {
-        logout();
-        showToast("Session expired. Please sign in again.", "error");
+      // Only treat 401 as expired session for protected API routes, not auth/login failures
+      if (!isAuthEndpoint) {
+        if (state.token) {
+          logout();
+          showToast("Session expired. Please sign in again.", "error");
+        }
       }
-      return { success: false, error: "Unauthorized" };
+      return data || { success: false, error: "Invalid email or password." };
     }
 
-    const data = await response.json();
-    return data;
+    if (!response.ok) {
+      return data || { success: false, error: `Request failed with status ${response.status}` };
+    }
+
+    return data || { success: true };
   } catch (err) {
     console.error(`[API Error] ${method} ${endpoint}:`, err);
     return { success: false, error: "Failed to connect to backend server. Make sure the Flask server is running." };
@@ -171,6 +180,16 @@ function setUserSession(user, token) {
 }
 
 function showAuthView() {
+  switchAuthMode("login");
+  const emailInput = document.getElementById("authEmail");
+  const passwordInput = document.getElementById("authPassword");
+  const nameInput = document.getElementById("authName");
+  if (emailInput) emailInput.value = "";
+  if (passwordInput) passwordInput.value = "";
+  if (nameInput) nameInput.value = "";
+  const errorAlert = document.getElementById("authErrorAlert");
+  if (errorAlert) errorAlert.classList.add("hidden");
+
   document.getElementById("mainContent").classList.add("hidden");
   document.getElementById("loginPage").classList.remove("hidden");
 }
@@ -1859,6 +1878,13 @@ function studyNavPrev() {
 
 function setupKeyboardShortcuts() {
   window.addEventListener("keydown", (e) => {
+    // Enter key submit on auth forms
+    if (e.key === "Enter" && (e.target && (e.target.id === "authEmail" || e.target.id === "authPassword" || e.target.id === "authName"))) {
+      e.preventDefault();
+      handleAuthSubmit();
+      return;
+    }
+
     // Global Ctrl+K to search
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
       e.preventDefault();

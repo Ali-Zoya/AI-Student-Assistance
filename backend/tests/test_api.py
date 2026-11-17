@@ -45,28 +45,61 @@ class ApiTestCase(unittest.TestCase):
         return token, {"Authorization": f"Bearer {token}"}
 
     def test_auth_flow(self):
-        token, headers = self.register_and_login()
+        # 1. Register a new user
+        token, headers = self.register_and_login(
+            email="john@university.edu",
+            password="securepassword123",
+            name="John Doe"
+        )
+        self.assertIsNotNone(token)
         
-        # Test /api/auth/me
-        res = self.client.get("/api/auth/me", headers=headers)
-        self.assertEqual(res.status_code, 200)
-        data = res.get_json()["data"]
-        self.assertEqual(data["user"]["email"], "student@university.edu")
+        # 2. Access protected endpoint with token
+        res_me = self.client.get("/api/auth/me", headers=headers)
+        self.assertEqual(res_me.status_code, 200)
+        data = res_me.get_json()["data"]
+        self.assertEqual(data["user"]["email"], "john@university.edu")
+        self.assertEqual(data["user"]["name"], "John Doe")
 
-        # Test login
-        res_login = self.client.post("/api/auth/login", json={
-            "email": "student@university.edu",
-            "password": "password123"
+        # 3. Log in with newly registered credentials (email)
+        res_login_email = self.client.post("/api/auth/login", json={
+            "email": "john@university.edu",
+            "password": "securepassword123"
         })
-        self.assertEqual(res_login.status_code, 200)
-        self.assertIn("token", res_login.get_json()["data"])
+        self.assertEqual(res_login_email.status_code, 200)
+        self.assertIn("token", res_login_email.get_json()["data"])
+        login_token = res_login_email.get_json()["data"]["token"]
 
-        # Test invalid password
-        res_bad = self.client.post("/api/auth/login", json={
-            "email": "student@university.edu",
+        # 4. Log in using student name (case-insensitive identifier support)
+        res_login_name = self.client.post("/api/auth/login", json={
+            "email": "john doe",
+            "password": "securepassword123"
+        })
+        self.assertEqual(res_login_name.status_code, 200)
+        self.assertIn("token", res_login_name.get_json()["data"])
+
+        # 5. Attempt login with incorrect password -> 401
+        res_bad_pw = self.client.post("/api/auth/login", json={
+            "email": "john@university.edu",
             "password": "wrongpassword"
         })
-        self.assertEqual(res_bad.status_code, 401)
+        self.assertEqual(res_bad_pw.status_code, 401)
+        self.assertEqual(res_bad_pw.get_json()["error"], "Invalid email or password.")
+
+        # 6. Attempt login with unregistered email -> 401
+        res_unreg = self.client.post("/api/auth/login", json={
+            "email": "unregistered@university.edu",
+            "password": "securepassword123"
+        })
+        self.assertEqual(res_unreg.status_code, 401)
+        self.assertEqual(res_unreg.get_json()["error"], "Invalid email or password.")
+
+        # 7. Access protected endpoint without token -> 401
+        res_no_token = self.client.get("/api/auth/me")
+        self.assertEqual(res_no_token.status_code, 401)
+
+        # 8. Access protected endpoint with invalid token -> 401
+        res_invalid_token = self.client.get("/api/auth/me", headers={"Authorization": "Bearer fake.invalid.token"})
+        self.assertEqual(res_invalid_token.status_code, 401)
 
     def test_tasks_crud_and_kanban(self):
         _, headers = self.register_and_login()
@@ -220,6 +253,97 @@ class ApiTestCase(unittest.TestCase):
         # Test 404 for nonexistent file
         res_404 = self.client.get("/nonexistent.file")
         self.assertEqual(res_404.status_code, 404)
+
+    def test_all_eight_scenarios_lifecycle(self):
+        # Scenario 1: Register a new user
+        reg_res = self.client.post("/api/auth/register", json={
+            "email": "johndoe@university.edu",
+            "password": "MyStrongPassword123",
+            "name": "John Doe"
+        })
+        self.assertEqual(reg_res.status_code, 201)
+        reg_data = reg_res.get_json()["data"]
+        self.assertIn("token", reg_data)
+        self.assertEqual(reg_data["user"]["email"], "johndoe@university.edu")
+
+        # Scenario 2: Log in using newly registered credentials
+        login_res = self.client.post("/api/auth/login", json={
+            "email": "johndoe@university.edu",
+            "password": "MyStrongPassword123"
+        })
+        self.assertEqual(login_res.status_code, 200)
+
+        # Scenario 3: Attempt login with incorrect password
+        bad_pw_res = self.client.post("/api/auth/login", json={
+            "email": "johndoe@university.edu",
+            "password": "WrongPassword!"
+        })
+        self.assertEqual(bad_pw_res.status_code, 401)
+        self.assertEqual(bad_pw_res.get_json()["error"], "Invalid email or password.")
+
+        # Scenario 4: Attempt login with unregistered email
+        unreg_res = self.client.post("/api/auth/login", json={
+            "email": "ghost@university.edu",
+            "password": "MyStrongPassword123"
+        })
+        self.assertEqual(unreg_res.status_code, 401)
+        self.assertEqual(unreg_res.get_json()["error"], "Invalid email or password.")
+
+        # Scenario 5: Verify JWT generation after successful login
+        jwt_token = login_res.get_json()["data"]["token"]
+        self.assertTrue(len(jwt_token) > 20)
+        auth_headers = {"Authorization": f"Bearer {jwt_token}"}
+
+        # Scenario 6: Access protected API endpoints using the generated token
+        me_res = self.client.get("/api/auth/me", headers=auth_headers)
+        self.assertEqual(me_res.status_code, 200)
+        self.assertEqual(me_res.get_json()["data"]["user"]["name"], "John Doe")
+
+        # Scenario 7: Verify dashboard data loading after login (all core endpoints called on dashboard load)
+        tasks_res = self.client.get("/api/tasks", headers=auth_headers)
+        cal_res = self.client.get("/api/calendar", headers=auth_headers)
+        decks_res = self.client.get("/api/flashcards/decks", headers=auth_headers)
+        cards_res = self.client.get("/api/flashcards", headers=auth_headers)
+        analytics_res = self.client.get("/api/analytics", headers=auth_headers)
+
+        self.assertEqual(tasks_res.status_code, 200)
+        self.assertEqual(cal_res.status_code, 200)
+        self.assertEqual(decks_res.status_code, 200)
+        self.assertEqual(cards_res.status_code, 200)
+        self.assertEqual(analytics_res.status_code, 200)
+
+        # Scenario 8: Ensure tasks, calendar, Pomodoro sessions, and analytics continue working
+        # Add task
+        new_task = self.client.post("/api/tasks", headers=auth_headers, json={
+            "title": "Study Calculus III",
+            "priority": "high",
+            "category": "Study",
+            "due_date": "2026-11-20"
+        })
+        self.assertEqual(new_task.status_code, 201)
+
+        # Add event
+        new_event = self.client.post("/api/calendar", headers=auth_headers, json={
+            "title": "Calculus Lecture",
+            "date": "2026-11-20",
+            "start_time": "10:00",
+            "end_time": "11:30",
+            "category": "Classes"
+        })
+        self.assertEqual(new_event.status_code, 201)
+
+        # Add Pomodoro session
+        new_session = self.client.post("/api/sessions", headers=auth_headers, json={
+            "duration_minutes": 25,
+            "session_type": "focus",
+            "topic": "Calculus"
+        })
+        self.assertEqual(new_session.status_code, 201)
+
+        # Verify analytics reflects the session
+        post_analytics = self.client.get("/api/analytics", headers=auth_headers)
+        self.assertEqual(post_analytics.status_code, 200)
+        self.assertEqual(post_analytics.get_json()["data"]["overview"]["today_study_minutes"], 25)
 
 if __name__ == "__main__":
     unittest.main()

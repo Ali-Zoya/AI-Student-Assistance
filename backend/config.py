@@ -17,8 +17,10 @@ class Config:
             database_url = database_url.replace("postgres://", "postgresql://", 1)
         SQLALCHEMY_DATABASE_URI = database_url
     else:
-        # Default fallback to SQLite database file in backend directory
-        db_path = BASE_DIR / "student_assistance.db"
+        # Consistent absolute path for local / cloud SQLite database
+        sqlite_file = os.getenv("SQLITE_PATH") or os.getenv("DATABASE_PATH") or (BASE_DIR / "student_assistance.db")
+        db_path = Path(sqlite_file).resolve().absolute()
+        db_path.parent.mkdir(parents=True, exist_ok=True)
         SQLALCHEMY_DATABASE_URI = f"sqlite:///{db_path}"
         
     SQLALCHEMY_TRACK_MODIFICATIONS = False

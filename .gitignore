@@ -23,6 +23,8 @@ backend/.env
 
 # Database files (auto-generated, not for version control)
 *.db
+*.db-wal
+*.db-shm
 *.sqlite
 *.sqlite3
 backend/student_assistance.db

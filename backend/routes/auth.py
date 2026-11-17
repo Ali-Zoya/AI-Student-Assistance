@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from sqlalchemy import func
 from ..models import db, User
 from ..utils.auth_middleware import generate_token, token_required
 from ..utils.helpers import is_valid_email, success_response, error_response
@@ -45,13 +46,17 @@ def register():
 @auth_bp.route("/login", methods=["POST"])
 def login():
     data = request.get_json() or {}
-    email = (data.get("email") or "").strip().lower()
+    identifier = (data.get("email") or data.get("username") or "").strip().lower()
     password = (data.get("password") or "").strip()
 
-    if not email or not password:
+    if not identifier or not password:
         return error_response("Email and password are required.", 400)
 
-    user = User.query.filter_by(email=email).first()
+    # Support login by email or student name/username (case-insensitive)
+    user = User.query.filter(
+        (func.lower(User.email) == identifier) | (func.lower(User.name) == identifier)
+    ).first()
+
     if not user or not user.check_password(password):
         return error_response("Invalid email or password.", 401)
 

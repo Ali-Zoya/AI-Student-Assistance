@@ -1,9 +1,9 @@
-from datetime import datetime, date, timedelta
+from datetime import datetime, date, timedelta, timezone
 from sqlalchemy import func
 from ..models import Task, StudySession, CalendarEvent, Flashcard, FlashcardDeck
 
 def get_user_analytics(user_id: int) -> dict:
-    today = date.today()
+    today = datetime.now(timezone.utc).date()
     
     # 1. Last 7 days dates and labels
     days = []
